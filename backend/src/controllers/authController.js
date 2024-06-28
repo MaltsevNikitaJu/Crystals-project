@@ -1,0 +1,30 @@
+const bcrypt = require("../utils/bcrypt");
+const jwt = require("../utils/jwt");
+const { createUser, findUserByEmail } = require("../models/userModel");
+
+const register = async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+    const hashedPassword = await bcrypt.hashPassword(password);
+    const newUser = await createUser({ email, password: hashedPassword, name });
+    const token = jwt.generateToken(newUser);
+    res.status(201).json({ user: newUser, token });
+  } catch (error) {
+    res.status(500).json({ error: "Ошибка при регистрации пользователя" });
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await findUserByEmail(email);
+    if (!user || !(await bcrypt.comparePassword(password, user.password))) {
+      return res.status(401).json({ error: "Неверный логин или пароль" });
+    }
+    const token = jwt.generateToken(user);
+    res.status(200).json({ user, token });
+  } catch (error) {
+    res.status(500).json({ error: "Ошибка авторизации" });
+  }
+};
+module.exports = { register, login };
