@@ -1,4 +1,5 @@
 const { createCart, getCartByUserId, addItemToCart, getCartItems } = require('../models/cartModel');
+const { getProductById} = require('../models/productModel');
 
 const getCart = async (req, res) => {
   try {
@@ -18,13 +19,16 @@ const addItem = async (req, res) => {
   try {
     const userId = req.user.id;
     const { productId, quantity } = req.body;
+    const product = await getProductById(productId);
+    const price = product.price;
     const cart = await getCartByUserId(userId);
     if (!cart) {
       return res.status(404).json({ error: 'Корзина не найдена' });
     }
-    const item = await addItemToCart(cart.id, productId, quantity);
+    const item = await addItemToCart(cart.id, productId, quantity,price);
     res.status(201).json(item);
   } catch (error) {
+    console.error('Ошибка при добавлении товара в корзину:', error);
     res.status(500).json({ error: 'Ошибка при добавлении товара в корзину' });
   }
 };

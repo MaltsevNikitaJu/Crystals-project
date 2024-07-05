@@ -8,7 +8,6 @@ exports.up = function(knex) {
         table.integer('cart_id').unsigned().references('id').inTable('carts').onDelete('CASCADE');
         table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE');
         table.integer('quantity').notNullable();
-        table.timestamps(true, true);
       });
 };
 

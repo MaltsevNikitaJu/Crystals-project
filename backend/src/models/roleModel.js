@@ -9,10 +9,6 @@ const assignRoleToUser = async (userId,roleId) => {
     return userRole;
 }
 
-// const getUserRoles = async (userId) => {
-//     return await db('users_roles').join('roles','users_roles.role_id','=','roles.id').where({user_id:userId}).select('roles.name');
-    
-// }
 const getUserRoles = async (userId) => {
     const roles = await db('users_roles')
         .join('roles', 'users_roles.role_id', '=', 'roles.id')

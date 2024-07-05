@@ -9,8 +9,8 @@ const getCartByUserId = async (userId) => {
     return await db('carts').where({user_id:userId}).first();
 }
 
-const addItemToCart = async (cartId,productId,quantity) => {
-    const [cartItem] = await db('cart_items').insert({cart_id:cartId,product_id:productId,quantity}).returning('*');
+const addItemToCart = async (cartId,productId,quantity,price) => {
+    const [cartItem] = await db('cart_items').insert({cart_id:cartId,product_id:productId,quantity,price}).returning('*');
     return cartItem;
 }
 

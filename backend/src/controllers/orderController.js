@@ -22,6 +22,7 @@ const createOrderFromCart = async (req, res) => {
 
     res.status(201).json({ order, items: cartItems });
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Ошибка при создании заказа' });
   }
 };

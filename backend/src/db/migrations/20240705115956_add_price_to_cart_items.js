@@ -3,9 +3,8 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-    return knex.schema.createTable('roles', (table) => {
-        table.increments('id').primary();
-        table.string('name').notNullable().unique();
+    return knex.schema.table('cart_items', function(table) {
+        table.decimal('price', 10, 2).notNullable();
       });
 };
 
@@ -14,5 +13,7 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.dropTableIfExists('roles');
+    return knex.schema.table('cart_items', function(table) {
+        table.dropColumn('price');
+      });
 };

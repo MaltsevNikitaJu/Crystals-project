@@ -9,7 +9,6 @@ exports.up = function(knex) {
         table.integer('product_id').unsigned().references('id').inTable('products').onDelete('CASCADE');
         table.integer('quantity').notNullable();
         table.decimal('price', 10, 2).notNullable();
-        table.timestamps(true, true);
       });
 };
 
