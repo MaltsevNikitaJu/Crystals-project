@@ -13,7 +13,7 @@ exports.up = function(knex) {
         table.decimal('protein', 5, 2).notNullable();  
         table.decimal('fat', 5, 2).notNullable();      
         table.decimal('carbohydrates', 5, 2).notNullable();  
-        table.integer('calories').notNullable();      
+        table.integer('calories').notNullable();   
     });
 };
 
