@@ -31,6 +31,41 @@ const updateProduct = async (id, productData) => {
   return updatedProduct;
 };
 
+const filterProducts = async (filters) => {
+  const query = db('products')
+    .join('categories', 'products.category_id', 'categories.id')
+    .select('products.*', 'categories.name as category_name');
+
+  if (filters.name) {
+    query.where('products.name', 'like', `%${filters.name}%`);
+  }
+  if (filters.category_id) {
+    query.where('products.category_id', parseInt(filters.category_id, 10));
+  }
+  if (filters.price_min) {
+    query.where('products.price', '>=', parseFloat(filters.price_min));
+  }
+  if (filters.price_max) {
+    query.where('products.price', '<=', parseFloat(filters.price_max));
+  }
+  if (filters.is_vegan) {
+    query.where('products.is_vegan', filters.is_vegan === 'true');
+  }
+  if (filters.is_healthy) {
+    query.where('products.is_healthy', filters.is_healthy === 'true');
+  }
+  if (filters.composition) {
+    const components = filters.composition.split(',').map(component => component.trim());
+    query.where(function() {
+      components.forEach(component => {
+        this.orWhere('products.composition', 'like', `%${component}%`);
+      });
+    });
+  }
+
+  return await query;
+};
+
 const deleteProduct = async (id) => {
   return await db('products').where({ id }).del();
 };
@@ -40,5 +75,6 @@ module.exports = {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  filterProducts
 };
