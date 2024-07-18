@@ -1,6 +1,7 @@
 const bcrypt = require("../utils/bcrypt");
 const jwt = require("../utils/jwt");
 const { createUser, findUserByEmail } = require("../models/userModel");
+const { getUserRoles } = require("../models/roleModel");
 
 const register = async (req, res) => {
   try {
@@ -40,7 +41,8 @@ const login = async (req, res) => {
     if (!user || !(await bcrypt.comparePassword(password, user.password))) {
       return res.status(401).json({ error: "Неверный логин или пароль" });
     } 
-      const token = jwt.generateToken(user);
+      const roles = await getUserRoles(user.id)
+      const token = jwt.generateToken(user,roles);
       res.status(200).json({message:"успешный вход", user, token });
     
   } catch (error) {

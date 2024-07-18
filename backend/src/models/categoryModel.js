@@ -10,9 +10,20 @@ const getCategoryById = async (id) => {
 
 const createCategory = async (categoryData) => {
   const { name } = categoryData;
+
+  let existingCategory = await db("categories").where({ name }).first();
+  if (existingCategory) {
+    throw new Error(`Category with name "${name}" already exists.`);
+  }
+
+  const maxIdResult = await db("categories").max("id as maxId").first();
+  const maxId = maxIdResult.maxId || 0;
+  await db.raw(`SELECT setval('categories_id_seq', ?)`, [maxId + 1]);
+
   const [newCategory] = await db("categories").insert({ name }).returning("*");
   return newCategory;
 };
+
 
 const updateCategory = async (id, categoryData) => {
   const { name, description } = categoryData;

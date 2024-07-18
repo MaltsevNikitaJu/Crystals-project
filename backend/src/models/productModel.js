@@ -14,60 +14,61 @@ const getProductById = async (id) => {
     .first();
 };
 
+const getProductByName = async (productName) => {
+  return await db('products')
+    .join('categories', 'products.category_id', 'categories.id')
+    .where('products.name', productName)
+    .select('products.*', 'categories.name as category_name')
+    .first();
+};
+
 const createProduct = async (productData) => {
-  const { name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, is_vegan, is_healthy } = productData;
+  const { name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, tags, mass } = productData;
   const [newProduct] = await db('products')
-    .insert({ name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, is_vegan, is_healthy })
+    .insert({ name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, tags, mass })
     .returning('*');
   return newProduct;
 };
 
 const updateProduct = async (id, productData) => {
-  const { name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, is_vegan, is_healthy } = productData;
+  const { name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, tags, mass } = productData;
   const [updatedProduct] = await db('products')
     .where({ id })
-    .update({ name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, is_vegan, is_healthy })
+    .update({ name, description, price, stock, image_url, protein, fat, carbohydrates, calories, category_id, composition, tags, mass })
     .returning('*');
   return updatedProduct;
 };
 
-const filterProducts = async (filters) => {
+const filterProductsByTag = async (filters) => {
   const query = db('products')
     .join('categories', 'products.category_id', 'categories.id')
     .select('products.*', 'categories.name as category_name');
 
-  if (filters.name) {
-    query.where('products.name', 'like', `%${filters.name}%`);
-  }
-  if (filters.category_id) {
-    query.where('products.category_id', parseInt(filters.category_id, 10));
-  }
-  if (filters.price_min) {
-    query.where('products.price', '>=', parseFloat(filters.price_min));
-  }
-  if (filters.price_max) {
-    query.where('products.price', '<=', parseFloat(filters.price_max));
-  }
-  if (filters.is_vegan) {
-    query.where('products.is_vegan', filters.is_vegan === 'true');
-  }
-  if (filters.is_healthy) {
-    query.where('products.is_healthy', filters.is_healthy === 'true');
-  }
-  if (filters.composition) {
-    const components = filters.composition.split(',').map(component => component.trim());
-    query.where(function() {
-      components.forEach(component => {
-        this.orWhere('products.composition', 'like', `%${component}%`);
-      });
+  const components = filters.tags.split(',').map(component => component.trim().toLowerCase());
+  query.where(function() {
+    components.forEach(component => {
+      this.andWhereRaw('LOWER(products.tags) LIKE ?', `%${component}%`);
     });
-  }
-
+  });
   return await query;
 };
 
 const deleteProduct = async (id) => {
   return await db('products').where({ id }).del();
+};
+
+const getProductsByCategory = async () => {
+  const categories = await db('categories').select('*');
+  const productsByCategory = {};
+
+  for (const category of categories) {
+    const products = await db('products')
+      .where('products.category_id', category.id)
+      .select('products.*');
+    productsByCategory[category.name] = products;
+  }
+
+  return productsByCategory;
 };
 
 module.exports = {
@@ -76,5 +77,7 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
-  filterProducts
+  filterProductsByTag,
+  getProductByName,
+  getProductsByCategory
 };

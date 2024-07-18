@@ -13,10 +13,13 @@ exports.up = function(knex) {
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
  */
-exports.down = function(knex) {
-    return knex.schema.table('products', function(table) {
-        table.dropColumn('category_id');
-      }).then(() => {
-        return knex.schema.dropTable('categories');
-      });
+exports.down = async function(knex) {
+  const hasColumn = await knex.schema.hasColumn('products', 'category_id');
+  if (hasColumn) {
+    await knex.schema.alterTable('products', (table) => {
+      table.dropColumn('category_id');
+    });
+  }
+
+  await knex.schema.dropTableIfExists('categories');
 };

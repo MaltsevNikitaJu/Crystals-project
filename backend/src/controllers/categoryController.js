@@ -28,6 +28,7 @@ const addCategory = async (req, res) => {
     const newCategory = await createCategory(categoryData);
     res.status(201).json(newCategory);
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Ошибка при добавлении категории' });
   }
 };

@@ -4,7 +4,9 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-  filterProducts
+  filterProductsByTag,
+  getProductByName,
+  getProductsByCategory
 } = require("../models/productModel");
 
 const fetchProducts = async (req, res) => {
@@ -25,7 +27,21 @@ const fetchProduct = async (req, res) => {
     }
     res.status(200).json(product);
   } catch (error) {
-    console.error(error)
+    console.error(error);
+    res.status(500).json({ error: "Ошибка при получении продукта" });
+  }
+};
+
+const fetchProductByName = async (req, res) => {
+  try {
+    const { productName } = req.params;
+    const product = await getProductByName(productName);
+    if (!product) {
+      return res.status(404).json({ error: "Продукт не найден" });
+    }
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Ошибка при получении продукта" });
   }
 };
@@ -59,10 +75,10 @@ const editProduct = async (req, res) => {
 const filterProductsController = async (req, res) => {
   try {
     const filters = req.body;
-    const products = await filterProducts(filters);
+    const products = await filterProductsByTag(filters);
     res.status(200).json(products);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     res.status(500).json({ error: "Ошибка при фильтрации продуктов" });
   }
 };
@@ -80,11 +96,34 @@ const removeProduct = async (req, res) => {
   }
 };
 
+const fetchRandomProducts = async (req, res) => {
+  try {
+    const products = await getAllProducts();
+    const shuffled = products.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 5);
+    res.status(200).json(selected);
+  } catch (error) {
+    res.status(500).json({ error: "Ошибка при получении случайных продуктов" });
+  }
+};
+
+const fetchProductsByCategory = async (req, res) => {
+  try {
+    const productsByCategory = await getProductsByCategory();
+    res.status(200).json(productsByCategory);
+  } catch (error) {
+    res.status(500).json({ error: "Ошибка при получении продуктов по категориям" });
+  }
+};
+
 module.exports = {
   fetchProducts,
   fetchProduct,
   addProduct,
   editProduct,
   removeProduct,
-  filterProductsController
+  filterProductsController,
+  fetchProductByName,
+  fetchRandomProducts,
+  fetchProductsByCategory
 };
