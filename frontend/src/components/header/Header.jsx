@@ -8,9 +8,11 @@ import SearchField from '../../styledComponents/textFields/searchField';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AuthModal from '../modalForms/AuthModal';
+import Cart from '../cart/Cart';
 
 const Header = ({ isAuthenticated, setIsAuthenticated, setIsAdmin, handleSearch }) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -22,12 +24,20 @@ const Header = ({ isAuthenticated, setIsAuthenticated, setIsAdmin, handleSearch 
     }
   }, [setIsAuthenticated, setIsAdmin]);
 
-  const handleOpen = () => {
+  const handleOpenAuth = () => {
     setModalOpen(true);
   };
 
-  const handleClose = () => {
+  const handleCloseAuth = () => {
     setModalOpen(false);
+  };
+
+  const handleOpenCart = () => {
+    setCartOpen(true);
+  };
+
+  const handleCloseCart = () => {
+    setCartOpen(false);
   };
 
   const handleSearchChange = (event) => {
@@ -57,15 +67,13 @@ const Header = ({ isAuthenticated, setIsAuthenticated, setIsAdmin, handleSearch 
     <>
       <AppBar position="sticky" sx={{ backgroundColor: '#D8C1B4', boxShadow: 'none', top: 0, zIndex: 1100, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', }}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          
-            <MainName variant="h5" component="div">
-              CRYSTALS
-            </MainName>
-            <SloganText component="div">
-              Напитки и сладости, <br />
-              которые не портят фигуру
-            </SloganText>
-          
+          <MainName variant="h5" component="div">
+            CRYSTALS
+          </MainName>
+          <SloganText component="div">
+            Напитки и сладости, <br />
+            которые не портят фигуру
+          </SloganText>
           <SearchField
             id="outlined-basic"
             type="search"
@@ -97,17 +105,18 @@ const Header = ({ isAuthenticated, setIsAuthenticated, setIsAdmin, handleSearch 
                 Личный кабинет
               </HeaderButton>
             ) : (
-              <HeaderButton onClick={handleOpen}>
+              <HeaderButton onClick={handleOpenAuth}>
                 Войти
               </HeaderButton>
             )}
-            <IconButton component={Link} to="/cart" sx={{ color: '#000000' }}>
+            <IconButton onClick={handleOpenCart} sx={{ color: '#000000' }}>
               <ShoppingCartIcon />
             </IconButton>
           </div>
         </Toolbar>
       </AppBar>
-      <AuthModal open={modalOpen} onClose={handleClose} setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
+      <AuthModal open={modalOpen} onClose={handleCloseAuth} setIsAuthenticated={setIsAuthenticated} setIsAdmin={setIsAdmin} />
+      <Cart open={cartOpen} onClose={handleCloseCart} isAuthenticated={isAuthenticated} />
     </>
   );
 };

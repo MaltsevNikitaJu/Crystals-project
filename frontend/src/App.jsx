@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Cart from './pages/Cart';
+
 import Profile from './pages/Profile';
 import Header from './components/header/Header';
 import './App.css';
@@ -26,7 +26,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home isAdmin={isAdmin} highlightedProduct={highlightedProduct} setHighlightedProduct={setHighlightedProduct} />} />
         <Route path="/profile" element={<Profile setIsAuthenticated={setIsAuthenticated} />} />
-        <Route path="/cart" element={<Cart />} />
+
       </Routes>
     </>
   );
