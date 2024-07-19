@@ -30,9 +30,9 @@ const AuthModal = ({ open, onClose, setIsAuthenticated,setIsAdmin }) => {
     try {
       let response;
       if (isLogin) {
-        response = await axios.post('/api/auth/login', { email, password });
+        response = await api.post('auth/login', { email, password });
       } else {
-        response = await axios.post('/api/auth/register', { name, email, password });
+        response = await api.post('auth/register', { name, email, password });
       }
       const { token, user } = response.data;
       localStorage.setItem('token', token);

@@ -22,9 +22,8 @@ const ProductDetailCard = ({ product, open, onClose }) => {
       return;
     }
     try {
-      await axios.post('/api/cart/add', 
+      await api.post('cart/add', 
         { productId: product.id, quantity }, 
-        { headers: { Authorization: `Bearer ${token}` } }
       );
       setMessage('Товар успешно добавлен в корзину.');
     } catch (error) {

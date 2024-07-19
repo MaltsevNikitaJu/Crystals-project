@@ -8,9 +8,11 @@ const Profile = ({ setIsAuthenticated }) => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/');
+    if (token) {
+      return;
     }
+
+    navigate('/');
   }, [navigate]);
 
   const handleLogout = () => {

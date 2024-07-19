@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Typography, TextField, Button } from "@mui/material";
-import axios from "axios";
+import api from "../../../api/api";
 import { useNavigate } from "react-router-dom";
 import { ModalBox, Title, TextFieldStyled, SubmitButton } from './AddProductModalStyles';
 
@@ -22,13 +22,8 @@ const EditCategoryModal = ({ open, onClose, category }) => {
     };
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`/api/categories/${category.id}`, categoryData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      await api.put(`categories/${category.id}`, categoryData, );
       handleClose();
       navigate("/");
     } catch (error) {

@@ -9,7 +9,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import axios from "axios";
+import api from "../../api/api";
 import SmallProductCard from "../productCards/SmallProductCard";
 import ProductDetailCard from "../productCards/ProductDetailCard";
 
@@ -21,11 +21,8 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
 
   useEffect(() => {
     const fetchCartItems = async () => {
-      const token = localStorage.getItem("token");
       try {
-        const response = await axios.get("/api/cart", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await api.get("cart");
         const items = response.data.items;
         setCartItems(items);
         setTotalPrice(
@@ -52,11 +49,11 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
   };
 
   const handleQuantityChange = async (productId, newQuantity) => {
-    const token = localStorage.getItem("token");
+
     try {
-      await axios.post("/api/cart/update", 
+      await api.post("cart/update", 
         { productId, quantity: newQuantity }, 
-        { headers: { Authorization: `Bearer ${token}` } }
+        
       );
       setCartItems((prevItems) =>
         prevItems.map((item) =>
@@ -76,11 +73,10 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
   };
 
   const handleRemoveItem = async (productId) => {
-    const token = localStorage.getItem("token");
+  
     try {
-      await axios.post("/api/cart/remove", 
+      await api.post("cart/remove", 
         { productId }, 
-        { headers: { Authorization: `Bearer ${token}` } }
       );
       setCartItems((prevItems) => prevItems.filter(item => item.product_id !== productId));
       const updatedTotalPrice = cartItems.reduce((total, item) => {

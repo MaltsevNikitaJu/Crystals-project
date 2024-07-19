@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, TextField } from "@mui/material";
-import axios from "axios";
+import api from "../../../api/api";
 import { useNavigate } from "react-router-dom";
 import {
   ModalBox,
@@ -21,12 +21,7 @@ const AddCategoryModal = ({ open, onClose }) => {
     };
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.post("/api/categories", categoryData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      await api.post("categories", categoryData, {
       });
       handleClose();
       navigate("/");
@@ -44,7 +39,7 @@ const AddCategoryModal = ({ open, onClose }) => {
     <Modal open={open} onClose={handleClose}>
       <form onSubmit={handleSubmit}>
         <ModalBox>
-          <Title>Добавить категорию</Title>
+          <Title sx={{marginTop: '0px'}}>Добавить категорию</Title>
           <TextFieldStyled>
             <TextField
               margin="normal"
@@ -68,6 +63,7 @@ const AddCategoryModal = ({ open, onClose }) => {
               width: "100%",
               display: "flex",
               justifyContent: "center",
+              cursor: "pointer",
               "&:hover": {
                 backgroundColor: "rgba(238, 217, 206, 0.8)",
               },

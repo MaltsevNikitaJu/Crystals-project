@@ -4,7 +4,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ProductDetailCard from "./ProductDetailCard";
 
-const ProductCard = ({ product, isAdmin, onEdit, onDelete, highlightedProduct }) => {
+const ProductCard = ({
+  product,
+  isAdmin,
+  onEdit,
+  onDelete,
+  highlightedProduct,
+}) => {
   const [detailOpen, setDetailOpen] = useState(false);
 
   const handleOpenDetail = () => {
@@ -15,7 +21,9 @@ const ProductCard = ({ product, isAdmin, onEdit, onDelete, highlightedProduct })
     setDetailOpen(false);
   };
 
-  const isHighlighted = highlightedProduct && product.name.toLowerCase().includes(highlightedProduct.toLowerCase());
+  const isHighlighted =
+    highlightedProduct &&
+    product.name.toLowerCase().includes(highlightedProduct?.toLowerCase());
 
   return (
     <>
@@ -31,7 +39,7 @@ const ProductCard = ({ product, isAdmin, onEdit, onDelete, highlightedProduct })
           transition: "transform 0.3s ease-in-out",
           filter: highlightedProduct && !isHighlighted ? "blur(2px)" : "none",
         }}
-        data-name={product.name.toLowerCase()} // Добавляем data-name атрибут
+        data-name={product.name.toLowerCase()}
       >
         {isAdmin && (
           <Box
@@ -43,10 +51,22 @@ const ProductCard = ({ product, isAdmin, onEdit, onDelete, highlightedProduct })
               zIndex: 1,
             }}
           >
-            <IconButton size="small" onClick={(e) => { e.stopPropagation(); onEdit(product); }}>
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(product);
+              }}
+            >
               <EditIcon />
             </IconButton>
-            <IconButton size="small" onClick={(e) => { e.stopPropagation(); onDelete(product.id); }}>
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(product.id);
+              }}
+            >
               <DeleteIcon />
             </IconButton>
           </Box>
@@ -74,7 +94,11 @@ const ProductCard = ({ product, isAdmin, onEdit, onDelete, highlightedProduct })
             padding: "5px 10px",
           }}
         >
-          <Typography variant="body2" color="text.primary" sx={{ fontSize: "1.25rem" }}>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            sx={{ fontSize: "1.25rem" }}
+          >
             {product.name}
           </Typography>
         </Box>
@@ -91,12 +115,20 @@ const ProductCard = ({ product, isAdmin, onEdit, onDelete, highlightedProduct })
             padding: "22px 4px",
           }}
         >
-          <Typography variant="body2" color="text.primary" sx={{ fontSize: "1.25rem", color: "white" }}>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            sx={{ fontSize: "1.25rem", color: "white" }}
+          >
             {product.price}₽
           </Typography>
         </Box>
       </Card>
-      <ProductDetailCard product={product} open={detailOpen} onClose={handleCloseDetail} />
+      <ProductDetailCard
+        product={product}
+        open={detailOpen}
+        onClose={handleCloseDetail}
+      />
     </>
   );
 };

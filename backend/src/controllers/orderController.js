@@ -1,17 +1,22 @@
-const { createOrder, addOrderItem, getOrdersByUserId, getOrderItems } = require('../models/orderModel');
-const { getCartByUserId, getCartItems } = require('../models/cartModel');
+const {
+  createOrder,
+  addOrderItem,
+  getOrdersByUserId,
+  getOrderItems,
+} = require("../models/orderModel");
+const { getCartByUserId, getCartItems } = require("../models/cartModel");
 
 const createOrderFromCart = async (req, res) => {
   try {
     const userId = req.user.id;
     const cart = await getCartByUserId(userId);
     if (!cart) {
-      return res.status(404).json({ error: 'Корзина не найдена' });
+      return res.status(404).json({ error: "Корзина не найдена" });
     }
     const cartItems = await getCartItems(cart.id);
 
     if (cartItems.length === 0) {
-      return res.status(400).json({ error: 'Корзина пуста' });
+      return res.status(400).json({ error: "Корзина пуста" });
     }
 
     const order = await createOrder(userId);
@@ -22,8 +27,8 @@ const createOrderFromCart = async (req, res) => {
 
     res.status(201).json({ order, items: cartItems });
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: 'Ошибка при создании заказа' });
+    console.error(error);
+    res.status(500).json({ error: "Ошибка при создании заказа" });
   }
 };
 
@@ -33,7 +38,7 @@ const getUserOrders = async (req, res) => {
     const orders = await getOrdersByUserId(userId);
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ error: 'Ошибка при получении заказов' });
+    res.status(500).json({ error: "Ошибка при получении заказов" });
   }
 };
 
@@ -43,7 +48,7 @@ const getOrderDetails = async (req, res) => {
     const items = await getOrderItems(orderId);
     res.status(200).json(items);
   } catch (error) {
-    res.status(500).json({ error: 'Ошибка при получении деталей заказа' });
+    res.status(500).json({ error: "Ошибка при получении деталей заказа" });
   }
 };
 

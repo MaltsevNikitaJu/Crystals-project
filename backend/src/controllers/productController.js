@@ -36,6 +36,7 @@ const fetchProductByName = async (req, res) => {
   try {
     const { productName } = req.params;
     const product = await getProductByName(productName);
+
     if (!product) {
       return res.status(404).json({ error: "Продукт не найден" });
     }
@@ -50,7 +51,6 @@ const addProduct = async (req, res) => {
   try {
     const productData = req.body;
     const newProduct = await createProduct(productData);
-    console.log(productData);
     res.status(201).json(newProduct);
   } catch (error) {
     console.error("Ошибка при добавлении продукта:", error);

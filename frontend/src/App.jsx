@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-
-import Profile from './pages/Profile';
-import Header from './components/header/Header';
-import './App.css';
+import React, { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Profile from "./pages/Profile";
+import Header from "./components/header/Header";
+import "./App.css";
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,16 +16,27 @@ const App = () => {
 
   return (
     <>
-      <Header 
-        isAuthenticated={isAuthenticated} 
-        setIsAuthenticated={setIsAuthenticated} 
+      <Header
+        isAuthenticated={isAuthenticated}
+        setIsAuthenticated={setIsAuthenticated}
         setIsAdmin={setIsAdmin}
         handleSearch={handleSearch}
       />
       <Routes>
-        <Route path="/" element={<Home isAdmin={isAdmin} highlightedProduct={highlightedProduct} setHighlightedProduct={setHighlightedProduct} />} />
-        <Route path="/profile" element={<Profile setIsAuthenticated={setIsAuthenticated} />} />
-
+        <Route
+          path="/"
+          element={
+            <Home
+              isAdmin={isAdmin}
+              highlightedProduct={highlightedProduct}
+              setHighlightedProduct={setHighlightedProduct}
+            />
+          }
+        />
+        <Route
+          path="/profile"
+          element={<Profile setIsAuthenticated={setIsAuthenticated} />}
+        />
       </Routes>
     </>
   );

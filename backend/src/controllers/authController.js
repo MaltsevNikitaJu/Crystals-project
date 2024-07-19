@@ -40,13 +40,11 @@ const login = async (req, res) => {
     const user = await findUserByEmail(email);
     if (!user || !(await bcrypt.comparePassword(password, user.password))) {
       return res.status(401).json({ error: "Неверный логин или пароль" });
-    } 
-      const roles = await getUserRoles(user.id)
-      const token = jwt.generateToken(user,roles);
-      res.status(200).json({message:"успешный вход", user, token });
-    
+    }
+    const roles = await getUserRoles(user.id);
+    const token = jwt.generateToken(user, roles);
+    res.status(200).json({ message: "успешный вход", user, token });
   } catch (error) {
-    console.log(error)
     res.status(500).json({ error: "Ошибка авторизации" });
   }
 };

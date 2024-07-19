@@ -12,7 +12,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import axios from "axios";
+import api from "../../../api/api";
 import { useNavigate } from "react-router-dom";
 import {
   ModalBox,
@@ -56,7 +56,7 @@ const AddProductModal = ({ open, onClose }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("/api/categories");
+        const response = await api.get("categories");
         setCategories(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке категорий", error);
@@ -114,13 +114,8 @@ const AddProductModal = ({ open, onClose }) => {
     };
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.post("/api/products", productData, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      await api.post("products", productData);
       handleClose();
       navigate("/");
     } catch (error) {
@@ -301,6 +296,7 @@ const AddProductModal = ({ open, onClose }) => {
               width: "100%",
               display: "flex",
               justifyContent: "center",
+              cursor:"pointer",
               "&:hover": {
                 backgroundColor: "rgba(238, 217, 206, 0.8)",
               },

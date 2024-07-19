@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Typography, TextField, Checkbox, FormControlLabel, FormGroup, Button, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
-import axios from "axios";
+import api from "../../../api/api";
 import { useNavigate } from "react-router-dom";
 import { ModalBox, Title, TextFieldStyled, CheckBoxGroup, ImagePreview, SubmitButton, SelectField } from './AddProductModalStyles';
 
@@ -27,7 +27,7 @@ const EditProductModal = ({ open, onClose, product }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('/api/categories');
+        const response = await api.get('categories');
         setCategories(response.data);
       } catch (error) {
         console.error('Ошибка при загрузке категорий', error);
@@ -105,12 +105,7 @@ const EditProductModal = ({ open, onClose, product }) => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`/api/products/${product.id}`, productData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await api.put(`products/${product.id}`, productData, );
       handleClose();
       navigate("/");
     } catch (error) {

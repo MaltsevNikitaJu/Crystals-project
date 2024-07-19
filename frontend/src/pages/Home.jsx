@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Button, Grid, Box } from "@mui/material";
-import axios from "axios";
+import { Container, Typography, Grid } from "@mui/material";
+import api from "../api/api";
 import CategoryButton from "../styledComponents/buttons/categorySelectionButton";
 import { getRandomElements } from "../hooks/useProducts";
 import ProductCard from "../components/productCards/ProductCard";
@@ -33,8 +33,8 @@ const Home = ({ isAdmin, highlightedProduct, setHighlightedProduct }) => {
   useEffect(() => {
     const fetchProductsAndCategories = async () => {
       try {
-        const productsResponse = await axios.get("/api/products/");
-        const categoriesResponse = await axios.get("/api/categories/");
+        const productsResponse = await api.get("products/");
+        const categoriesResponse = await api.get("categories/");
 
         const products = productsResponse.data;
         const categories = categoriesResponse.data;
@@ -51,7 +51,6 @@ const Home = ({ isAdmin, highlightedProduct, setHighlightedProduct }) => {
         }, {});
 
         setProductsByCategory(groupedProducts);
-        console.log("Grouped Products by Category:", groupedProducts);
       } catch (error) {
         console.error("Ошибка при получении продуктов:", error);
       }
@@ -119,12 +118,10 @@ const Home = ({ isAdmin, highlightedProduct, setHighlightedProduct }) => {
   const handleApplyFilters = async (tags) => {
     try {
       const lowerCaseTags = tags.map((tag) => tag.toLowerCase());
-      console.log("Selected Tags:", lowerCaseTags);
-      const response = await axios.post("/api/products/filter", {
+      const response = await api.post("products/filter", {
         tags: lowerCaseTags.join(","),
       });
       setFilteredProducts(response.data);
-      console.log("Filtered Products:", response.data);
     } catch (error) {
       console.error("Ошибка при фильтрации продуктов:", error);
     }
@@ -158,21 +155,12 @@ const Home = ({ isAdmin, highlightedProduct, setHighlightedProduct }) => {
   };
 
   const handleConfirmDelete = async () => {
-    const token = localStorage.getItem("token");
     try {
       if (deleteType === "product") {
-        await axios.delete(`/api/products/${deleteItem}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await api.delete(`products/${deleteItem}`);
         setProducts(products.filter((product) => product.id !== deleteItem));
       } else if (deleteType === "category") {
-        await axios.delete(`/api/categories/${deleteItem}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        await api.delete(`categories/${deleteItem}`);
         setCategories(
           categories.filter((category) => category.id !== deleteItem)
         );
@@ -229,20 +217,14 @@ const Home = ({ isAdmin, highlightedProduct, setHighlightedProduct }) => {
               {isAdmin && (
                 <>
                   <Grid item xs={12} sm={6} md={4}>
-                    <StyledButton
-                      
-                      onClick={handleOpenProductModal}
-                    >
+                    <StyledButton onClick={handleOpenProductModal}>
                       Добавить продукт
                     </StyledButton>
                     <AddProductModal
                       open={productModalOpen}
                       onClose={handleCloseProductModal}
                     />
-                    <StyledButton
-                     
-                      onClick={handleOpenCategoryModal}
-                    >
+                    <StyledButton onClick={handleOpenCategoryModal}>
                       Добавить категорию
                     </StyledButton>
                   </Grid>
