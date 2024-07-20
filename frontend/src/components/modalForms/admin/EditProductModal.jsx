@@ -1,10 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Typography, TextField, Checkbox, FormControlLabel, FormGroup, Button, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
+import {
+  Modal,
+  Typography,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from "@mui/material";
 import api from "../../../api/api";
 import { useNavigate } from "react-router-dom";
-import { ModalBox, Title, TextFieldStyled, CheckBoxGroup, ImagePreview, SubmitButton, SelectField } from './AddProductModalStyles';
+import {
+  ModalBox,
+  Title,
+  TextFieldStyled,
+  CheckBoxGroup,
+  ImagePreview,
+  SubmitButton,
+  SelectField,
+} from "./AddProductModalStyles";
 
-const tagOptions = ["без орехов", "без сахара", "без цитрусовых", "без шоколада", "веганские", "ПП", "шоколадные", "ягодные"];
+const tagOptions = [
+  "без орехов",
+  "без сахара",
+  "без цитрусовых",
+  "без шоколада",
+  "веганские",
+  "ПП",
+  "шоколадные",
+  "ягодные",
+];
 
 const EditProductModal = ({ open, onClose, product }) => {
   const [name, setName] = useState("");
@@ -27,10 +56,10 @@ const EditProductModal = ({ open, onClose, product }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await api.get('categories');
+        const response = await api.get("categories");
         setCategories(response.data);
       } catch (error) {
-        console.error('Ошибка при загрузке категорий', error);
+        console.error("Ошибка при загрузке категорий", error);
       }
     };
 
@@ -62,7 +91,7 @@ const EditProductModal = ({ open, onClose, product }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
-        setImageUrl(reader.result); // Save image as base64 string
+        setImageUrl(reader.result);
       };
       reader.readAsDataURL(file);
     } else {
@@ -97,15 +126,15 @@ const EditProductModal = ({ open, onClose, product }) => {
       fat,
       carbohydrates,
       calories,
-      category_id: parseInt(categoryId, 10),  // Ensure it's an integer
+      category_id: parseInt(categoryId, 10),
       composition,
-      tags: tags.join(','),
-      mass
+      tags: tags.join(","),
+      mass,
     };
 
     try {
-      const token = localStorage.getItem('token');
-      await api.put(`products/${product.id}`, productData, );
+      const token = localStorage.getItem("token");
+      await api.put(`products/${product.id}`, productData);
       handleClose();
       navigate("/");
     } catch (error) {
@@ -136,7 +165,9 @@ const EditProductModal = ({ open, onClose, product }) => {
       <form onSubmit={handleSubmit}>
         <ModalBox>
           <Title>Редактировать продукт</Title>
-          {imagePreview && <ImagePreview src={imagePreview} alt="Превью изображения" />}
+          {imagePreview && (
+            <ImagePreview src={imagePreview} alt="Превью изображения" />
+          )}
           <TextFieldStyled>
             <TextField
               margin="normal"
@@ -267,14 +298,18 @@ const EditProductModal = ({ open, onClose, product }) => {
             {tagOptions.map((tag) => (
               <FormControlLabel
                 key={tag}
-                control={<Checkbox value={tag} onChange={handleTagChange} checked={tags.includes(tag)} />}
+                control={
+                  <Checkbox
+                    value={tag}
+                    onChange={handleTagChange}
+                    checked={tags.includes(tag)}
+                  />
+                }
                 label={tag}
               />
             ))}
           </CheckBoxGroup>
-          <SubmitButton type="submit">
-            Сохранить
-          </SubmitButton>
+          <SubmitButton type="submit">Сохранить</SubmitButton>
         </ModalBox>
       </form>
     </Modal>

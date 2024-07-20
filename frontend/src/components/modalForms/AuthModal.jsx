@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Modal, Box, Typography, TextField, Button } from '@mui/material';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Modal, Box, Typography, TextField, Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import api from "../../api/api";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
+  bgcolor: "#faf8f6",
   boxShadow: 24,
   p: 4,
 };
 
-const AuthModal = ({ open, onClose, setIsAuthenticated,setIsAdmin }) => {
+const AuthModal = ({ open, onClose, setIsAuthenticated, setIsAdmin }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const handleSwitch = () => {
@@ -30,30 +30,30 @@ const AuthModal = ({ open, onClose, setIsAuthenticated,setIsAdmin }) => {
     try {
       let response;
       if (isLogin) {
-        response = await api.post('auth/login', { email, password });
+        response = await api.post("auth/login", { email, password });
       } else {
-        response = await api.post('auth/register', { name, email, password });
+        response = await api.post("auth/register", { name, email, password });
       }
       const { token, user } = response.data;
-      localStorage.setItem('token', token);
+      localStorage.setItem("token", token);
       setIsAuthenticated(true);
-      
-      const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+
+      const tokenPayload = JSON.parse(atob(token.split(".")[1]));
       const roles = tokenPayload.roles || [];
-      setIsAdmin(roles.includes('admin'));
-      
+      setIsAdmin(roles.includes("admin"));
+
       onClose();
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Auth failed', error);
+      console.error("Auth failed", error);
     }
   };
 
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style} component="form" onSubmit={handleSubmit}>
-        <Typography variant="h6" component="h2">
-          {isLogin ? 'Вход' : 'Регистрация'}
+        <Typography variant="h4" component="h2">
+          {isLogin ? "Вход" : "Регистрация"}
         </Typography>
         {!isLogin && (
           <TextField
@@ -85,11 +85,17 @@ const AuthModal = ({ open, onClose, setIsAuthenticated,setIsAdmin }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-          {isLogin ? 'Войти' : 'Зарегистрироваться'}
+        <Button
+          type="submit"
+          fullWidth
+          sx={{ color: "black", backgroundColor: "#D8C1B4", mt: 3, mb: 2 }}
+        >
+          {isLogin ? "Войти" : "Зарегистрироваться"}
         </Button>
         <Button fullWidth onClick={handleSwitch}>
-          {isLogin ? 'Нет аккаунта? Зарегистрируйтесь сейчас' : 'Уже есть аккаунт? Войдите в него'}
+          {isLogin
+            ? "Нет аккаунта? Зарегистрируйтесь сейчас"
+            : "Уже есть аккаунт? Войдите в него"}
         </Button>
       </Box>
     </Modal>

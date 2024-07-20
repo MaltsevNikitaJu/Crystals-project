@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
 import { AppBar, Toolbar, InputAdornment, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -25,8 +25,17 @@ const Header = ({
     const token = localStorage.getItem("token");
     if (token) {
       setIsAuthenticated(true);
-      const roles = JSON.parse(atob(token.split(".")[1])).roles;
-      setIsAdmin(roles.includes("admin"));
+      try {
+        const parsedToken = JSON.parse(atob(token.split(".")[1]));
+        const roles = parsedToken.roles;
+        if (roles && Array.isArray(roles)) {
+          setIsAdmin(roles.includes("admin"));
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (e) {
+        setIsAdmin(false);
+      }
     }
   }, [setIsAuthenticated, setIsAdmin]);
 
@@ -71,8 +80,8 @@ const Header = ({
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-    if (event.target.value === '') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (event.target.value === "") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
     debouncedScrollToProduct(query);
   };

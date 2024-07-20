@@ -49,15 +49,13 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
   };
 
   const handleQuantityChange = async (productId, newQuantity) => {
-
     try {
-      await api.post("cart/update", 
-        { productId, quantity: newQuantity }, 
-        
-      );
+      await api.post("cart/update", { productId, quantity: newQuantity });
       setCartItems((prevItems) =>
         prevItems.map((item) =>
-          item.product_id === productId ? { ...item, quantity: newQuantity } : item
+          item.product_id === productId
+            ? { ...item, quantity: newQuantity }
+            : item
         )
       );
       const updatedTotalPrice = cartItems.reduce((total, item) => {
@@ -68,17 +66,41 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
       }, 0);
       setTotalPrice(updatedTotalPrice);
     } catch (error) {
-      console.error("Ошибка при обновлении количества товара в корзине:", error);
+      console.error(
+        "Ошибка при обновлении количества товара в корзине:",
+        error
+      );
+    }
+  };
+  const handlePaymentLink = async () => {
+    try {
+      const response = await api.post("orders/pay");
+      const { confirmation_url, paymentId, value } = response.data;
+
+      if (confirmation_url) {
+        window.open(confirmation_url, "YooKassa", "width=800,height=500");
+      } else {
+        console.error("Ссылка для оплаты не получена");
+      }
+      setTimeout(async () => {
+        const setPayment = await api.post(`orders/pay/catch/${paymentId}`, {
+          value: value,
+        });
+        const setStatus = await api.post(`orders/pay/status/${paymentId}`, {
+          status: "success",
+        });
+      }, 60000);
+    } catch (error) {
+      console.error("Error initiating payment:", error);
     }
   };
 
   const handleRemoveItem = async (productId) => {
-  
     try {
-      await api.post("cart/remove", 
-        { productId }, 
+      await api.post("cart/remove", { productId });
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => item.product_id !== productId)
       );
-      setCartItems((prevItems) => prevItems.filter(item => item.product_id !== productId));
       const updatedTotalPrice = cartItems.reduce((total, item) => {
         if (item.product_id !== productId) {
           return total + item.price * item.quantity;
@@ -122,7 +144,10 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
                 Итого: {totalPrice} ₽
               </Typography>
               <DialogActions sx={{ background: "rgb(250, 248, 246)" }}>
-                <Button sx={{background: "#D8C1B4",color:"#000000"}}>
+                <Button
+                  sx={{ background: "#D8C1B4", color: "#000000" }}
+                  onClick={handlePaymentLink}
+                >
                   Купить
                 </Button>
               </DialogActions>

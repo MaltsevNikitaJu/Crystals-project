@@ -46,7 +46,7 @@ const AddProductModal = ({ open, onClose }) => {
   const [fat, setFat] = useState("");
   const [carbohydrates, setCarbohydrates] = useState("");
   const [calories, setCalories] = useState("");
-  const [categoryId, setCategoryId] = useState(""); // Default to empty string
+  const [categoryId, setCategoryId] = useState("");
   const [composition, setComposition] = useState("");
   const [tags, setTags] = useState([]);
   const [mass, setMass] = useState("");
@@ -107,14 +107,13 @@ const AddProductModal = ({ open, onClose }) => {
       fat,
       carbohydrates,
       calories,
-      category_id: parseInt(categoryId, 10), // Ensure it's an integer
+      category_id: parseInt(categoryId, 10),
       composition,
       tags: tags.join(","),
       mass,
     };
 
     try {
-
       await api.post("products", productData);
       handleClose();
       navigate("/");
@@ -296,7 +295,7 @@ const AddProductModal = ({ open, onClose }) => {
               width: "100%",
               display: "flex",
               justifyContent: "center",
-              cursor:"pointer",
+              cursor: "pointer",
               "&:hover": {
                 backgroundColor: "rgba(238, 217, 206, 0.8)",
               },
