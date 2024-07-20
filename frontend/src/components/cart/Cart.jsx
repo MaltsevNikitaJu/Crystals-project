@@ -82,14 +82,20 @@ const Cart = ({ open, onClose, isAuthenticated }) => {
       } else {
         console.error("Ссылка для оплаты не получена");
       }
-      setTimeout(async () => {
+      setInterval(async () => {
         const setPayment = await api.post(`orders/pay/catch/${paymentId}`, {
           value: value,
         });
-        const setStatus = await api.post(`orders/pay/status/${paymentId}`, {
-          status: "success",
-        });
-      }, 60000);
+        if (setPayment.status === 201){
+          const setStatus = await api.post(`orders/pay/status/${paymentId}`, {
+            status: "success",
+          });
+        } else {
+          const setStatus = await api.post(`orders/pay/status/${paymentId}`, {
+            status: "canceled",
+          });
+        }
+      }, 6000);
     } catch (error) {
       console.error("Error initiating payment:", error);
     }
